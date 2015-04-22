@@ -1,0 +1,13 @@
+IRrc/Makefile
+IRrc/MANIFEST
+IRrc/IRheli.cpp
+IRrc/IRrc.h
+IRrc/IRrc.cpp
+IRrc/IRheli.h
+IRrc/project.cfg
+IRrc/doc/*
+IRrc/examples/HeliDemo/HeliDemo.pde
+IRrc/examples/HeliRCRx/HeliRCRx.pde
+IRrc/examples/USBJoystickHeli/USBJoystickHeli.pde
+IRrc/perl/js.pl
+IRrc/LICENSE

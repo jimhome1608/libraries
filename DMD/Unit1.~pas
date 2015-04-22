@@ -1,0 +1,65 @@
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs;
+
+type
+  TForm1 = class(TForm)
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+function TComPort.Open() : Boolean;
+var
+PortDCB : TDCB;
+Timeouts : COMMTIMEOUTS;
+begin
+Result := False;
+FHandle := CreateFile(PChar(FName),
+GENERIC_READ or GENERIC_WRITE,
+0, nil, OPEN_EXISTING,
+0, 0); //trying to open com port
+
+if (FHandle = INVALID_HANDLE_VALUE) then
+exit;//com port was nor oppened for some reasons
+
+FillChar(PortDCB, sizeof(TDCB), #0);
+PortDCB.DCBlength := sizeof(TDCB);
+GetCommState(FHandle, PortDCB); //getting port state
+
+PortDCB.BaudRate := FBaudRate;
+PortDCB.ByteSize := 8;
+PortDCB.Parity := NOPARITY;
+PortDCB.StopBits := ONESTOPBIT;
+PortDCB.Flags := FFlags;//4243;
+
+if (not SetCommState(FHandle, PortDCB)) then
+exit;
+
+Timeouts.ReadIntervalTimeout := MAXDWORD;
+Timeouts.ReadTotalTimeoutMultiplier := MAXDWORD;
+Timeouts.ReadTotalTimeoutConstant := FReadTimeOut; //read timeout
+Timeouts.WriteTotalTimeoutMultiplier := MAXDWORD;
+Timeouts.WriteTotalTimeoutConstant := FWriteTimeOut; //write timeout
+
+if (not SetCommTimeouts(FHandle, Timeouts)) then
+exit;
+
+EscapeCommFunction(FHandle, 11);
+
+Result := True;
+end;
+
+end.
